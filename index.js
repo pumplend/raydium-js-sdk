@@ -306,9 +306,6 @@ async function getMarketInfo(SerumMarket) {
 async function example() {
   
   const AmmId = new PublicKey('885XNKURTvUzw8CcrM6oGnjP2wht5VgA4U7P44ExHvc9')
-  console.log(
-    await addressFetch(AmmId , new PublicKey(0), new PublicKey(0), new PublicKey(0),connection)
-  )
   return  await addressFetch(AmmId , new PublicKey(0), new PublicKey(0), new PublicKey(0),connection)
 }
 
@@ -316,7 +313,7 @@ async function example() {
 
 
 
-async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections) {
+async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections = connection) {
   connection = connections
   // const RAYDIUM_AMM_PROGRAM = new PublicKey("675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8");
   const Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')
@@ -362,7 +359,8 @@ async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount,
 }
 
 
-module.exports = function () {
-  example
+module.exports = 
+{
+  example,
   addressFetch
-};
+}
