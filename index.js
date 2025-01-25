@@ -313,11 +313,15 @@ async function example() {
 
 
 
-async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections = connection) {
+async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections = connection ,network = "devnet") {
   connection = connections
-  // const RAYDIUM_AMM_PROGRAM = new PublicKey("675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8");
-  const Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')
-  // var TokenProgram = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+  let Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')  
+  if(network == "devnet")
+  {
+    Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')
+  }else{
+    Amm_Authority = new PublicKey('DbQqP6ehDYmeYjcBaMRuA8tAJY1EjDUz9DpwSLjaQqfC')
+  }
   var AccountInfoDecode = await getAMMInfo(AmmId)
   var AmmAuthority = Amm_Authority
   var AmmOpenOrders = AccountInfoDecode.ammOpenOrders
