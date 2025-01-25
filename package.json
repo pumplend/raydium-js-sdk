@@ -1,0 +1,43 @@
+{
+  "name": "@pumplend/raydium-js-sdk",
+  "description": "A simple raydium SDK for account data fetch .",
+  "version": "0.0.1",
+  "homepage": "https://github.com/pumplend/",
+  "author": {
+    "name": "wikig",
+    "url": "https://github.com/pumplend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pumplend/raydium-js-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/pumplend/raydium-js-sdk/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/pumplend/raydium-js-sdk/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "keywords": [
+    "raydium",
+    "solana",
+    "pumpfun",
+    "pumpmax",
+    "pumplend"
+  ],
+  "dependencies": {
+    "@project-serum/borsh": "^0.2.5",
+    "@solana/web3.js": "^1.98.0",
+    "bn.js": "^5.2.1",
+    "buffer-layout": "^1.2.2"
+  }
+}
