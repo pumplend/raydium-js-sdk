@@ -362,9 +362,30 @@ async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount,
 }
 }
 
+async function getPoolsForToken(targetMintAddress,poolProgramId = new PublicKey("HWy1jotHpo6UqeQxx49dpYYdQB8wj9Qk9MdxwjLvDHB8"))
+{
+  let target = [];
+  try {
+    const accounts = await connection.getProgramAccounts(poolProgramId);
+    const targetPools = accounts.filter(account => {
+      const poolData = account.account.data;
+      return poolData.includes(targetMintAddress.toBuffer());
+    });
+    
+    if (targetPools.length > 0) {
+      targetPools.forEach(pool => {
+        target.push(pool.pubkey)
+      });
+    } 
+  } catch (error) {
+    
+  }
+  return target
+};
 
 module.exports = 
 {
   example,
-  addressFetch
+  addressFetch,
+  getPoolsForToken
 }
