@@ -315,12 +315,12 @@ async function example() {
 
 async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections = connection ,network = "devnet") {
   connection = connections
-  let Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')  
+  let Amm_Authority = new PublicKey('DbQqP6ehDYmeYjcBaMRuA8tAJY1EjDUz9DpwSLjaQqfC')  
   if(network == "devnet")
   {
-    Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')
-  }else{
     Amm_Authority = new PublicKey('DbQqP6ehDYmeYjcBaMRuA8tAJY1EjDUz9DpwSLjaQqfC')
+  }else{
+    Amm_Authority = new PublicKey('5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1')
   }
   var AccountInfoDecode = await getAMMInfo(AmmId)
   var AmmAuthority = Amm_Authority
