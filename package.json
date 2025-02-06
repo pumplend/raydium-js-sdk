@@ -1,7 +1,7 @@
 {
   "name": "@pumplend/raydium-js-sdk",
   "description": "A simple raydium SDK for account data fetch .",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "homepage": "https://github.com/pumplend/",
   "author": {
     "name": "wikig",
