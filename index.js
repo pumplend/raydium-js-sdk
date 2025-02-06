@@ -427,7 +427,7 @@ async function getPoolsForToken(targetMintAddress,poolProgramId = new PublicKey(
     }
   }
 };
-async function getDefaultPool(targetMintAddress,poolProgramId = new PublicKey("HWy1jotHpo6UqeQxx49dpYYdQB8wj9Qk9MdxwjLvDHB8"),network = "devnet")
+async function getDefaultPool(targetMintAddress,network = "devnet",poolProgramId = new PublicKey("HWy1jotHpo6UqeQxx49dpYYdQB8wj9Qk9MdxwjLvDHB8"))
 {
   const find = await getPoolsForToken(targetMintAddress,poolProgramId,network)
   if(network == "devnet")
