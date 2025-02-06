@@ -452,7 +452,13 @@ async function getDefaultPool(targetMintAddress,poolProgramId = new PublicKey("H
       }
     });
 
-    return final;
+    if(!final)
+    {
+      return false;
+    }
+    return [
+      new PublicKey(final.id)
+    ];
   }
 
 }
