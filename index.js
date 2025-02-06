@@ -462,5 +462,6 @@ module.exports =
 {
   example,
   addressFetch,
-  getPoolsForToken
+  getPoolsForToken,
+  getDefaultPool
 }
