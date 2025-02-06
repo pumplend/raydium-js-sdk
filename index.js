@@ -2,11 +2,12 @@
 'use strict';
 
 const { Connection, TransactionInstruction, PublicKey, Transaction, Keypair } = require('@solana/web3.js');
-
+const raydium = require("@raydium-io/raydium-sdk-v2");
 const { publicKey } = require('@project-serum/borsh')
 var { bits, Blob, Layout, u32, UInt,blob, seq, struct, u8 } = require('buffer-layout');
 var BN  = require('bn.js');
 var connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+const WSOL_ADDRESS =  new PublicKey("So11111111111111111111111111111111111111112") //Default devnet
 class Zeros extends Blob {
   decode(b, offset) {
     const slice = super.decode(b, offset);
@@ -313,7 +314,7 @@ async function example() {
 
 
 
-async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections = connection ,network = "devnet") {
+async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount, connections = connection ,network = "devnet" , ProgramId = null) {
   connection = connections
   let Amm_Authority = new PublicKey('DbQqP6ehDYmeYjcBaMRuA8tAJY1EjDUz9DpwSLjaQqfC')  
   if(network == "devnet")
@@ -328,7 +329,12 @@ async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount,
   var AmmTargetOrders = AccountInfoDecode.ammTargetOrders
   var PoolCoinTokenAccount = AccountInfoDecode.poolCoinTokenAccount
   var PoolPcTokenAccount = AccountInfoDecode.poolPcTokenAccount
+
   var SerumProgramId = new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin')
+  if(ProgramId)
+    {
+      SerumProgramId = ProgramId
+    }
   var SerumMarket = AccountInfoDecode.serumMarket
   var MarketInfoDecode = await getMarketInfo(SerumMarket)
   var SerumBids = MarketInfoDecode.bids
@@ -362,26 +368,95 @@ async function addressFetch(AmmId , UserOwner , inTokenAccount ,outTokenAccount,
 }
 }
 
-async function getPoolsForToken(targetMintAddress,poolProgramId = new PublicKey("HWy1jotHpo6UqeQxx49dpYYdQB8wj9Qk9MdxwjLvDHB8"))
-{
-  let target = [];
+async function fetchPoolByMintsMainnet(mintA, mintB) {
+  const r = await raydium.Raydium.load(
+    {
+        connection:connection,
+        cluster: "mainnet",
+        disableFeatureCheck: true,
+        disableLoadToken: true,
+        blockhashCommitment: "confirmed",
+    }
+  )
   try {
-    const accounts = await connection.getProgramAccounts(poolProgramId);
-    const targetPools = accounts.filter(account => {
-      const poolData = account.account.data;
-      return poolData.includes(targetMintAddress.toBuffer());
+    const poolData = await r.api.fetchPoolByMints({
+      mint1: mintA,
+      mint2: mintB
     });
-    
-    if (targetPools.length > 0) {
-      targetPools.forEach(pool => {
-        target.push(pool.pubkey)
-      });
-    } 
+
+    if (poolData) {
+      return poolData;
+    } else {
+      return null;
+    }
   } catch (error) {
-    
+    console.error("Failed to fetch pools", error);
+    throw error;
   }
-  return target
+}
+
+async function getPoolsForToken(targetMintAddress,poolProgramId = new PublicKey("HWy1jotHpo6UqeQxx49dpYYdQB8wj9Qk9MdxwjLvDHB8"),network = "devnet")
+{
+  if(network == "devnet")
+  {
+    let target = [];
+    try {
+      const accounts = await connection.getProgramAccounts(poolProgramId);
+      const targetPools = accounts.filter(account => {
+        const poolData = account.account.data;
+        return poolData.includes(targetMintAddress.toBuffer());
+      });
+      
+      if (targetPools.length > 0) {
+        targetPools.forEach(pool => {
+          target.push(pool.pubkey)
+        });
+      } 
+    } catch (error) {
+      return false;
+    }
+    return target
+  }else{
+    
+    //Do it via mainnet
+    try{
+      return await fetchPoolByMintsMainnet(WSOL_ADDRESS, targetMintAddress)
+    }catch(e)
+    {
+      return false;
+    }
+  }
 };
+async function getDefaultPool(targetMintAddress,poolProgramId = new PublicKey("HWy1jotHpo6UqeQxx49dpYYdQB8wj9Qk9MdxwjLvDHB8"),network = "devnet")
+{
+  const find = getPoolsForToken(targetMintAddress,poolProgramId,network)
+  if(network == "devnet")
+  {
+    return find
+  }else{
+    if(!find || !find?.data || find.data?.length == 0)
+    {
+      return false;
+    }
+    let final ; 
+    const tmp = []
+    find.data.forEach(ele => {
+      if(ele.type == "Standard")
+      {
+        //Find the max tvl standard pool
+        tmp.push(ele)
+        if(!final || ele.tvl >= final?.tvl)
+        {
+          final = tmp[0]
+        }
+      }
+    });
+
+    return final;
+  }
+
+}
+
 
 module.exports = 
 {

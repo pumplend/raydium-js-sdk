@@ -1,7 +1,7 @@
 {
   "name": "@pumplend/raydium-js-sdk",
   "description": "A simple raydium SDK for account data fetch .",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "homepage": "https://github.com/pumplend/",
   "author": {
     "name": "wikig",
@@ -36,6 +36,7 @@
   ],
   "dependencies": {
     "@project-serum/borsh": "^0.2.5",
+    "@raydium-io/raydium-sdk-v2": "^0.1.111-alpha",
     "@solana/web3.js": "^1.98.0",
     "bn.js": "^5.2.1",
     "buffer-layout": "^1.2.2"
